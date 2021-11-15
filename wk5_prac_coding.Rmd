@@ -111,9 +111,34 @@ all_data_three <- all_data_two%>%
             OSM_hotels,
             by=c('gss_code'='gss_code'))
 
-mapnorm <- all_data_three%>%
+map_norm <- all_data_three%>%
   mutate(airbnb_norm=airbnbcount/total_beds_per_borough)%>%
   mutate(hotel_norm=hotelcount/total_beds_per_borough)
 
+```
+
+```{r extra_info}
+Worldcities_extract <- Worldcities%>%
+  clean_names()%>%
+  filter(cntry_name=='United Kingdom')%>%
+  filter(city_name=='London'|city_name=='Birmingham'|city_name=='Edinburgh')
+
+UK_outline <- st_read(here::here('data',
+                                 'gadm36_GBR_shp',
+                                 'gadm36_GBR_0.shp'))%>%
+  st_transform(.,27700)
+  
+```
+```{r mapping}
+tmap_mode('plot')
+
+tm_shape(map_norm)+
+  tm_polygons('airbnb_norm',
+              style='jenks',#自然间断分裂法
+              palette='PuBu')+
+  tm_legend(show = FALSE)+#图例
+  tm_layout(frame = FALSE)+#外边框
+  tm_credits('(a)',position = c(0,0.85),size=1.5)#左下角为（0，0），右上角为（1，1）
+  
 ```
 
