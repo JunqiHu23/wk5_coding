@@ -1,0 +1,13 @@
+---
+title: "wk5_prac"
+author: "chris"
+date: "2021/11/15"
+output: html_document
+---
+
+# Notes
+
+bedroom is at ward - convert to borough
+could also probably just use Local Area District Data
+Hotel is points - summarise over borough
+Airbnb is points - summarise over borough
