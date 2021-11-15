@@ -41,5 +41,23 @@ OSM <- st_read(here::here('data',
                           'greater-london-latest-free.shp',
                           'gis_osm_pois_a_free_1.shp'))%>%
   st_transform(.,27700)           #crs转换为british national grid 27700
+
+Airbnb <- read_csv(here::here('data',
+                              'listings',
+                              'listings.csv'))%>%
+  st_as_sf(.,coords=c('longitude','latitude'),
+           crs=4326)%>%
+  st_transform(.,27700)
+
+Worldcities <- st_read(here::here('data',
+                                  'World_Cities',
+                                  'World_Cities.shp'))
+
+ward_beds <- read_csv(here::here('data',
+                              'ward_bedrooms.csv'))%>%
+  clean_names()
 ```
 
+
+```{r bed to borough}
+bed-borough <- Londonwards
