@@ -42,6 +42,7 @@ Londonwards <- st_read(here::here('data',
   st_transform(.,27700)
 ```
 ```{r accomodation data}
+
 OSM <- st_read(here::here('data',
                           'greater-london-latest-free.shp',
                           'gis_osm_pois_a_free_1.shp'))%>%
@@ -111,6 +112,7 @@ all_data_three <- all_data_two%>%
             OSM_hotels,
             by=c('gss_code'='gss_code'))
 
+# 卧室数量，它可以让您根据每个病房的卧室数量对 airbnb 和酒店数据进行标准化。
 map_norm <- all_data_three%>%
   mutate(airbnb_norm=airbnbcount/total_beds_per_borough)%>%
   mutate(hotel_norm=hotelcount/total_beds_per_borough)
@@ -176,9 +178,22 @@ legend <- tm_shape(map_norm)+
 
 t=tmap_arrange(tm1,tm2,tm3,legend,ncol =2 )
 
+t
+```
+```{r}
+library(grid)
+grid.newpage()
+
+pushViewport(viewport(layout=grid.layout(2,2)))
+print(tm1, vp=viewport(layout.pos.col=1, layout.pos.row=1, height=5))
+print(tm2, vp=viewport(layout.pos.col=2, layout.pos.row=1, height=5))
+print(tm3, vp=viewport(layout.pos.col=1, layout.pos.row=2, height=5))
+print(legend, vp=viewport(layout.pos.col=2, layout.pos.row=2, height=5))
 ```
 
-```{r insetmap}
+
+# 5.7.2 insetmap
+```{r}
 Londonbb <- st_bbox(map_norm)%>%
   st_as_sfc()
 
@@ -208,13 +223,17 @@ library(grid)
 tmmain
 print(inset,vp=viewport(0.86,0.29,width=0.5,height=0.55))
 ```
+
+
 ```{r export map}
 tmap_save(t, 'hotelsandairbnbR.png')
 
 library(grid)
 tmap_save(insets_tm = inset,insets_vp=viewport(x=0.86, y=0.29, width=.5, height=.55), filename="test.pdf", dpi=600)
 ```
-```{r basic interactive map}
+
+# 5.7.5 basic interactive map
+```{r}
 tmap_mode("view")
 
 tm_shape(map_norm) + 
@@ -228,7 +247,7 @@ library(leaflet)
 
 #join data
 Joined <- Airbnb%>%
-  st_join(., OSM_hotels, join = st_equals)%>%
+  st_join(.,OSM_hotels, join = st_equals)%>%
   dplyr::select(GSS_CODE.x, NAME.x, `Accomodation count.x`, `Accomodation count.y`)%>%
   dplyr::rename(`GSS code` =`GSS_CODE.x`,
                 `Borough` = `NAME.x`,
